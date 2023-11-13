@@ -98,7 +98,7 @@ function getStatusColor(item) {
       <Heading level={1}>Sensor Demo Dashboard</Heading>
       <Flex direction="row" justifyContent="center">
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Lane Unobstructed?
+          Lane #
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">  
           Status
@@ -119,7 +119,7 @@ function getStatusColor(item) {
       <Flex direction="row" justifyContent="center">
       {demoprojData.map(item => (
         <View width="16.66%" padding="1rem" backgroundColor="grey">
-          {item.status === 1 ? 'true' : 'false'}
+          {item.id.toString()}
         </View>
       ))}
       {demoprojData.map(item => (
