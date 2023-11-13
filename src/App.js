@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
-import { API } from "aws-amplify";
+import { API, graphqlOperation } from "aws-amplify";
 import {
   Button,
   Flex,
@@ -12,6 +12,7 @@ import {
   withAuthenticator,
 } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
+import { updateDemoprojtable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
 
@@ -23,6 +24,23 @@ const [time2, setTime2] = useState(12.38);
 async function fetchData() {
   const apiData = await API.graphql({ query: listDemoprojtables });
   setDemoprojData(apiData.data.listDemoprojtables.items);
+}
+
+const SixtyTrue = async () => {
+  const input = {
+    id: '1',
+    sixty: true,
+    status: '3'
+  };
+  return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
+}
+
+const SixtyFalse = async () => {
+  const input = {
+    id: '1',
+    sixty: false
+  };
+  return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
 }
 
 useEffect(() => {
@@ -51,6 +69,17 @@ useEffect(() => {
     setIsTimerRunning(false);
   }
 }, [demoprojData]);
+
+useEffect(() => {
+  if(time >= 60) {
+    SixtyTrue();
+
+  } else{
+    SixtyFalse(); 
+  }
+}, [time]);
+
+
 
 function getStatusColor(item) {
   if(item.status === 1) {
