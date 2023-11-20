@@ -20,6 +20,8 @@ const [demoprojData, setDemoprojData] = useState([]);
 const [isTimerRunning, setIsTimerRunning] = useState(false);
 const [time, setTime] = useState(0);
 const [time2, setTime2] = useState(12.38);
+const [finalTime2Count, setFinalTime2Count] = useState(null);
+const lastTime = null;
 
 async function fetchData() {
   const apiData = await API.graphql({ query: listDemoprojtables });
@@ -62,10 +64,17 @@ return () => clearInterval(interval);
 }, []) 
 
 useEffect(() => {
+  if (!isTimerRunning && time2 !== 12.38) {
+    setFinalTime2Count(time2);
+  }
+}, [isTimerRunning, time2]);
+
+useEffect(() => {
   const latestItem = demoprojData[demoprojData.length - 1];
   if(latestItem?.time === 'start') {
     setIsTimerRunning(true);
   } else if (latestItem?.time === 'stop') {
+    const lastTime = time2;
     setIsTimerRunning(false);
   }
 }, [demoprojData]);
@@ -101,19 +110,22 @@ function getStatusColor(item) {
           Lane #
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">  
-          Status
+          Lane Status
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          SMS Sent? 
+          Initial SMS 
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Obstruction Over a Minute?
+          Escalation SMS
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Time 
+          Response Time 
         </View>
         <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          True Time
+          Lane Losses
+        </View>
+        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
+          Final Loss
         </View>
       </Flex>
       <Flex direction="row" justifyContent="center">
@@ -142,9 +154,12 @@ function getStatusColor(item) {
       <View width="16.66%" padding="1rem" backgroundColor="grey">
       {isTimerRunning && <Text>{time}</Text>} 
       </View>
-        <View width="16.66%" padding="1rem" backgroundColor="grey">
+      <View width="16.66%" padding="1rem" backgroundColor="grey">
         {isTimerRunning && <Text>{time2}</Text>} 
-        </View>
+      </View>
+      <View width="16.66%" padding="1rem" backgroundColor="grey">
+      {finalTime2Count ?? <Text>{time2}</Text>} 
+      </View>
       </Flex>
       <Heading level={2}></Heading>
       <Button onClick={signOut}>Sign Out</Button>
