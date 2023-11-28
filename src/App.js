@@ -13,7 +13,7 @@ import {
 } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
 import { updateDemoprojtable } from './graphql/mutations';
-//test
+//test2
 const App = ({ signOut }) => {
 
 const [demoprojData, setDemoprojData] = useState([]); 
