@@ -138,7 +138,7 @@ const App = ({ signOut }) => {
 
           <Flex direction="column" width="80%" padding="1rem">
             {demoprojData.map((item, index) => (
-              <Flex key={index} direction="column" justifyContent="center" backgroundColor={getStatusColor(item)}>
+              <Flex key={index} direction="row" justifyContent="center" backgroundColor={getStatusColor(item)}>
                 <Text width="16.66%" padding="0.5rem">{`Take-away #${item.id} Pallet Build`}</Text>
                 <Text width="16.66%" padding="0.5rem">{item.laneStatus}</Text>
                 <Text width="16.66%" padding="0.5rem">{item.initialSMS}</Text>
