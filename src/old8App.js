@@ -127,26 +127,26 @@ const App = ({ signOut }) => {
           <Text>Distribution Center: San Bernardino, CA</Text>
 
           <Flex direction="row" justifyContent="center" backgroundColor="#2e73b8">
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Description</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Status</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Initial SMS</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Escalation SMS</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Response Time</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Losses</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Final Losses</div>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Description</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Status</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Initial SMS</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Escalation SMS</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Response Time</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Losses</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Final Losses</Text>
           </Flex>
 
           <Flex direction="column" width="80%" padding="1rem">
             {demoprojData.map((item, index) => (
               <Flex key={index} direction="row" justifyContent="center">
-                <div className="column-cell" style={{ width: '16.66%', backgroundColor: getStatusColor(item) }}>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem" backgroundColor={getStatusColor(item)}>
                   {`Take-away #${item.id} Pallet Build`}
-                </div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{isTimerRunning ? 'true' : 'false'}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time >= 60 ? 'true' : 'false'}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time2}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{finalTime2Count !== null ? finalTime2Count : 'N/A'}</div>
+                </Text>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time}</Text>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{isTimerRunning ? 'true' : 'false'}</Text>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time >= 60 ? 'true' : 'false'}</Text>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time2}</Text>
+                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</Text>
               </Flex>
             ))}
           </Flex>
