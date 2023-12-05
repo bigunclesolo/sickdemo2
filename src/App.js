@@ -123,19 +123,19 @@ function getStatusColor(item) {
           </Flex>
 
           {/* Dynamically generated lane information */}
-          <Flex direction="row" justifyContent="center">
-            {demoprojData.map((item, index) => (
-              <Flex key={index} direction="column" width="16.66%" padding="1rem" backgroundColor={getStatusColor(item)}>
-                <Text>{`Take-away #${item.id} Pallet Build`}</Text>
-                <Text>{item.laneStatus}</Text>
-                <Text>{item.initialSMS}</Text>
-                <Text>{item.escalationSMS}</Text>
-                <Text>{item.responseTime}</Text>
-                <Text>{item.laneLosses}</Text>
-                <Text>{item.finalLosses}</Text>
-              </Flex>
-            ))}
-          </Flex>
+<Flex direction="column" width="80%" padding="1rem">
+  {demoprojData.map((item, index) => (
+    <Flex key={index} direction="row" justifyContent="center" backgroundColor={getStatusColor(item)}>
+      <Text width="16.66%" padding="0.5rem">{`Take-away #${item.id} Pallet Build`}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.laneStatus}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.initialSMS}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.escalationSMS}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.responseTime}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.laneLosses}</Text>
+      <Text width="16.66%" padding="0.5rem">{item.finalLosses}</Text>
+    </Flex>
+  ))}
+</Flex>
 
           {/* Current date and time display */}
           <Flex justifyContent="center" backgroundColor="white">
