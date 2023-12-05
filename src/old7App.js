@@ -139,14 +139,14 @@ const App = ({ signOut }) => {
           <Flex direction="column" width="80%" padding="1rem">
             {demoprojData.map((item, index) => (
               <Flex key={index} direction="row" justifyContent="center">
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem" backgroundColor={getStatusColor(item)}>
+                <Text width="16.66%" padding="0.5rem" backgroundColor={getStatusColor(item)}>
                   {`Take-away #${item.id} Pallet Build`}
                 </Text>
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time}</Text>
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{isTimerRunning ? 'true' : 'false'}</Text>
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time >= 60 ? 'true' : 'false'}</Text>
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{time2}</Text>
-                <Text minWidth="16.66%" maxWidth="16.66%" padding="0.5rem">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</Text>
+                <Text width="16.66%" padding="0.5rem">{time}</Text>
+                <Text width="16.66%" padding="0.5rem">{isTimerRunning ? 'true' : 'false'}</Text>
+                <Text width="16.66%" padding="0.5rem">{time >= 60 ? 'true' : 'false'}</Text>
+                <Text width="16.66%" padding="0.5rem">{time2}</Text>
+                <Text width="16.66%" padding="0.5rem">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</Text>
               </Flex>
             ))}
           </Flex>
