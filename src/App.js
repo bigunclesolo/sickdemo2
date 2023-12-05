@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
-import { Button, Flex, Heading, Text, View, withAuthenticator } from "@aws-amplify/ui-react";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
 import { updateDemoprojtable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
-  const [demoprojData, setDemoprojData] = useState([]); 
+  const [demoprojData, setDemoprojData] = useState([]);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [time2, setTime2] = useState(12.38);
   const [finalTime2Count, setFinalTime2Count] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
-  // Fetch data from the API
   async function fetchData() {
-    const apiData = await API.graphql({ query: listDemoprojtables });
+    const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
     setDemoprojData(apiData.data.listDemoprojtables.items);
   }
 
-  // Function to handle 60 seconds condition
   const SixtyTrue = async () => {
     const input = {
       id: '1',
       sixty: true,
       status: '3'
     };
-    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
+    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
   }
 
   const SixtyFalse = async () => {
@@ -35,54 +32,48 @@ const App = ({ signOut }) => {
       id: '1',
       sixty: false
     };
-    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
+    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
   }
 
-  // Timer effect
   useEffect(() => {
     let interval;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTime(prev => prev + 1); 
-        setTime2(prev => prev + 1);
+        setTime(prevTime => prevTime + 1);
+        setTime2(prevTime2 => prevTime2 + 1);
       }, 1000);
     } else if (finalTime2Count === null) {
       setFinalTime2Count(time2);
     }
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [isTimerRunning, time2, finalTime2Count]);
 
-  // Fetch data periodically
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData(); 
+      fetchData();
     }, 5000);
-
     return () => clearInterval(interval);
-  }, []) 
+  }, []);
 
-  // Effect for checking the latest item in the data
   useEffect(() => {
     const latestItem = demoprojData[demoprojData.length - 1];
-    if(latestItem?.time === 'start') {
+    if (latestItem?.time === 'start') {
       setIsTimerRunning(true);
-      setFinalTime2Count(null); // Reset finalTime2Count on restart
+      setFinalTime2Count(null);
     } else if (latestItem?.time === 'stop') {
       setIsTimerRunning(false);
-      setFinalTime2Count(time2); // Store the last time2 value
+      setFinalTime2Count(time2);
     }
   }, [demoprojData, time2]);
 
-  // Effect for handling 60 seconds condition
   useEffect(() => {
-    if(time >= 60) {
+    if (time >= 60) {
       SixtyTrue();
     } else {
-      SixtyFalse(); 
+      SixtyFalse();
     }
   }, [time]);
 
-  // Function to determine the status color
   function getStatusColor(item) {
     switch (item.status) {
       case 1:
@@ -96,67 +87,58 @@ const App = ({ signOut }) => {
     }
   }
 
-  // Format date and time
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', { hour12: true });
   };
 
-  // Update the current date and time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <View className="App">
-      <Flex direction="row" justifyContent="space-between" backgroundColor="white">
-        <Flex direction="column" width="20%" padding="1rem" backgroundColor="white">
-          <Text fontWeight="bold" color={"#2e73b8"}>Facility Statistics</Text>
-          <Text fontWeight="bold" backgroundColor="#2e73b8" color="white">Shipping Sorter</Text>
-          <Text fontWeight="bold">Receiving Sorter</Text>
-          <Text fontWeight="bold">Crossbelt Sorter 1</Text>
-          <Text fontWeight="bold">Crossbelt Sorter 2</Text>
-          <Button onClick={signOut} marginTop="auto">Sign Out</Button>
-        </Flex>
-
-        <Flex direction="column" width="80%" padding="1rem">
-          <Heading level={1}>ACME Inc.</Heading>
-          <Text>Distribution Center: San Bernardino, CA</Text>
-
-          <Flex direction="row" justifyContent="center" backgroundColor="#2e73b8">
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Description</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Status</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Initial SMS</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Escalation SMS</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Response Time</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Lane Losses</div>
-            <div className="column-header" style={{ width: '16.66%' }}>Final Losses</div>
-          </Flex>
-
-          <Flex direction="column" width="80%" padding="1rem">
-            {demoprojData.map((item, index) => (
-              <Flex key={index} direction="row" justifyContent="center">
-                <div className="column-cell" style={{ width: '16.66%', backgroundColor: getStatusColor(item) }}>
-                  {`Take-away #${item.id} Pallet Build`}
-                </div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{isTimerRunning ? 'true' : 'false'}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time >= 60 ? 'true' : 'false'}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{time2}</div>
-                <div className="column-cell" style={{ width: '16.66%' }}>{finalTime2Count !== null ? finalTime2Count : 'N/A'}</div>
-              </Flex>
-            ))}
-          </Flex>
-
-          <Flex justifyContent="center" backgroundColor="white">
-            <Text padding="0.5rem">{formatDateTime(currentDateTime)}</Text>
-          </Flex>
-        </Flex>
-      </Flex>
-    </View>
+    <div className="App">
+      <div className="sidebar">
+        <div className="sidebar-item" style={{ fontWeight: 'bold', color: '#2e73b8' }}>Facility Statistics</div>
+        <div className="sidebar-item active">Shipping Sorter</div>
+        <div className="sidebar-item">Receiving Sorter</div>
+        <div className="sidebar-item">Crossbelt Sorter 1</div>
+        <div className="sidebar-item">Crossbelt Sorter 2</div>
+        <button onClick={signOut} className="sign-out-button">Sign Out</button>
+      </div>
+      <div className="main-content">
+        <h1>ACME Inc.</h1>
+        <div>Distribution Center: San Bernardino, CA</div>
+        <div className="grid-container">
+          {/* Grid Headers */}
+          <div className="grid-header">Lane Description</div>
+          <div className="grid-header">Lane Status</div>
+          <div className="grid-header">Initial SMS</div>
+          <div className="grid-header">Escalation SMS</div>
+          <div className="grid-header">Response Time</div>
+          <div className="grid-header">Lane Losses</div>
+          <div className="grid-header">Final Losses</div>
+          {/* Grid Rows */}
+          {demoprojData.map((item, index) => (
+            <React.Fragment key={index}>
+              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item) }}>
+                {`Take-away #${item.id} Pallet Build`}
+              </div>
+              <div className="grid-cell">{time}</div>
+              <div className="grid-cell">{isTimerRunning ? 'true' : 'false'}</div>
+              <div className="grid-cell">{time >= 60 ? 'true' : 'false'}</div>
+              <div className="grid-cell">{time2}</div>
+              <div className="grid-cell">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</div>
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="time-display">
+          {formatDateTime(currentDateTime)}
+        </div>
+      </div>
+    </div>
   );
 };
 
