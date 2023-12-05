@@ -2,26 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
-import {
-  Button,
-  Flex,
-  Heading,
-  Text,
-  TextField,
-  View,
-  withAuthenticator,
-} from "@aws-amplify/ui-react";
+import { Button, Flex, Heading, Text, View, withAuthenticator } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
 import { updateDemoprojtable } from './graphql/mutations';
-//test2
-const App = ({ signOut }) => {
 
-const [demoprojData, setDemoprojData] = useState([]); 
-const [isTimerRunning, setIsTimerRunning] = useState(false);
-const [time, setTime] = useState(0);
-const [time2, setTime2] = useState(12.38);
-const [finalTime2Count, setFinalTime2Count] = useState(null);
-const lastTime = null;
+const App = ({ signOut }) => {
+  const [demoprojData, setDemoprojData] = useState([]); 
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [time, setTime] = useState(0);
+  const [time2, setTime2] = useState(12.38);
+  const [finalTime2Count, setFinalTime2Count] = useState(null);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
 async function fetchData() {
   const apiData = await API.graphql({ query: listDemoprojtables });
@@ -46,19 +37,20 @@ const SixtyFalse = async () => {
 }
 
 useEffect(() => {
+  let interval;
   if (isTimerRunning) {
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       setTime(prev => prev + 1); 
       setTime2(prev => prev + 1);
     }, 1000);
-    return () => clearInterval(interval); 
   }
+  return () => clearInterval(interval); 
 }, [isTimerRunning]);
 
 useEffect(() => {
   const interval = setInterval(() => {
     fetchData(); 
-  }, 1000);
+  }, 5000);
 
 return () => clearInterval(interval);
 }, []) 
@@ -88,8 +80,6 @@ useEffect(() => {
   }
 }, [time]);
 
-
-
 function getStatusColor(item) {
   if(item.status === 1) {
     return 'green';
@@ -100,69 +90,59 @@ function getStatusColor(item) {
   }
   return 'grey';
 }
-  
+  const formatDateTime = (date) => {
+    return date.toLocaleString('en-US', { hour12: true });
+  };
 
   return (
     <View className="App">
-      <Heading level={1}>Sensor Demo Dashboard</Heading>
-      <Flex direction="row" justifyContent="center">
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Lane #
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">  
-          Lane Status
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Initial SMS 
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Escalation SMS
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Response Time 
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Lane Losses
-        </View>
-        <View as="header" width="16.66%" padding="0.5rem" backgroundColor="lightgrey">
-          Final Loss
-        </View>
+      <Flex direction="row" justifyContent="space-between" backgroundColor="white">
+        <Flex direction="column" width="20%" padding="1rem" backgroundColor="white">
+          <Text fontWeight="bold" color={"#2e73b8"}>Facility Statistics</Text>
+          <Text fontWeight="bold" backgroundColor="#2e73b8" color="white">Shipping Sorter</Text>
+          <Text fontWeight="bold">Receiving Sorter</Text>
+          <Text fontWeight="bold">Crossbelt Sorter 1</Text>
+          <Text fontWeight="bold">Crossbelt Sorter 2</Text>
+          <Button onClick={signOut} marginTop="auto">Sign Out</Button>
+        </Flex>
+
+        {/* Main Content */}
+        <Flex direction="column" width="80%" padding="1rem">
+          <Heading level={1} fon>ACME Inc.</Heading>
+          <Text>Distribution Center: San Bernardino, CA</Text>
+
+          {/* Lane Headers */}
+          <Flex direction="row" justifyContent="center" backgroundColor="#2e73b8">
+          <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Description</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Status</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Initial SMS</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Escalation SMS</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Response Time</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Lane Losses</Text>
+            <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>Final Losses</Text>
+          </Flex>
+
+          {/* Dynamically generated lane information */}
+          <Flex direction="row" justifyContent="center">
+            {demoprojData.map((item, index) => (
+              <Flex key={index} direction="column" width="16.66%" padding="1rem" backgroundColor={getStatusColor(item)}>
+                <Text>{`Take-away #${item.id} Pallet Build`}</Text>
+                <Text>{item.laneStatus}</Text>
+                <Text>{item.initialSMS}</Text>
+                <Text>{item.escalationSMS}</Text>
+                <Text>{item.responseTime}</Text>
+                <Text>{item.laneLosses}</Text>
+                <Text>{item.finalLosses}</Text>
+              </Flex>
+            ))}
+          </Flex>
+
+          {/* Current date and time display */}
+          <Flex justifyContent="center" backgroundColor="white">
+            <Text padding="0.5rem">{formatDateTime(currentDateTime)}</Text>
+          </Flex>
+        </Flex>
       </Flex>
-      <Flex direction="row" justifyContent="center">
-      {demoprojData.map(item => (
-        <View width="16.66%" padding="1rem" backgroundColor="grey">
-          {item.id.toString()}
-        </View>
-      ))}
-      {demoprojData.map(item => (
-        <View 
-          width="16.66%" 
-          padding="1rem"
-          backgroundColor={getStatusColor(item)}>
-        </View>
-      ))}
-      {demoprojData.map(item => (
-        <View width="16.66%" padding="1rem" backgroundColor="grey">  
-          {item.sms.toString()}
-        </View>
-      ))}
-       {demoprojData.map(item => (
-        <View width="16.66%" padding="1rem" backgroundColor="grey">  
-          {item.sixty.toString()}
-        </View>
-      ))}
-      <View width="16.66%" padding="1rem" backgroundColor="grey">
-      {isTimerRunning && <Text>{time}</Text>} 
-      </View>
-      <View width="16.66%" padding="1rem" backgroundColor="grey">
-        {isTimerRunning && <Text>{time2}</Text>} 
-      </View>
-      <View width="16.66%" padding="1rem" backgroundColor="grey">
-      {finalTime2Count ?? <Text>{time2}</Text>} 
-      </View>
-      </Flex>
-      <Heading level={2}></Heading>
-      <Button onClick={signOut}>Sign Out</Button>
     </View>
   );
 };
