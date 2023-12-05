@@ -138,12 +138,12 @@ const App = ({ signOut }) => {
 
           <Flex direction="column" width="80%" padding="1rem">
             {demoprojData.map((item, index) => (
-              <Flex key={index} direction="row" justifyContent="center" backgroundColor={getStatusColor(item)}>
-                <Text width="16.66%" padding="0.5rem" backgroundColor={getStatusColor(item)}>{`Take-away #${item.id} Pallet Build`}</Text>
-                <Text width="16.66%" padding="0.5rem">{time}</Text>
-                <Text width="16.66%" padding="0.5rem">{isTimerRunning ? 'true' : 'false'}</Text>
-                <Text width="16.66%" padding="0.5rem" fontWeight="bold" color={"white"}>{time >= 60 ? 'true' : 'false'}</Text>
-                <Text width="16.66%" padding="0.5rem">{time2}</Text>
+              <Flex key={index} direction="column" justifyContent="center" backgroundColor={getStatusColor(item)}>
+                <Text width="16.66%" padding="0.5rem">{`Take-away #${item.id} Pallet Build`}</Text>
+                <Text width="16.66%" padding="0.5rem">{item.laneStatus}</Text>
+                <Text width="16.66%" padding="0.5rem">{item.initialSMS}</Text>
+                <Text width="16.66%" padding="0.5rem">{item.escalationSMS}</Text>
+                <Text width="16.66%" padding="0.5rem">{isTimerRunning ? time2 : item.laneLosses}</Text>
                 <Text width="16.66%" padding="0.5rem">{finalTime2Count !== null ? finalTime2Count : item.finalLosses}</Text>
               </Flex>
             ))}
