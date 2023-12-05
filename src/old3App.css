@@ -1,11 +1,7 @@
-* {
-  box-sizing: border-box;
-}
-
 .App {
   display: flex;
   flex-direction: row;
-  height: 100vh; 
+  min-height: 100vh; 
 }
 
 .sidebar {
@@ -14,14 +10,13 @@
   background-color: white;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  margin-top: 70px; 
+  justify-content: top; 
 }
 
 .sidebar-item {
   font-weight: bold;
   color: #2e73b8;
-  margin-bottom: 0.5rem; 
+  margin-bottom: 0.5rem;
 }
 
 .sidebar-item.active {
@@ -34,32 +29,30 @@
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  justify-content: top; 
   align-items: center; 
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); 
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
   width: 100%; 
-  align-items: center;
-}
-
-.grid-header, .grid-cell {
-  padding: 0.5rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  align-self: center; 
 }
 
 .grid-header {
-  background-color: #2e73b8;
-  color: white;
+  padding: 0.5rem;
   font-weight: bold;
+  color: white;
+  background-color: #2e73b8;
+  text-align: center;
 }
 
 .grid-cell {
-  background-color: white; 
+  padding: 0.5rem;
+  background-color: white;
+  text-align: center;
 }
 
 .time-display {
@@ -74,3 +67,4 @@
   border: none;
   cursor: pointer;
 }
+
