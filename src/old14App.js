@@ -14,121 +14,25 @@ const App = ({ signOut }) => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   async function fetchData() {
-    try {
-      const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
-      setDemoprojData(apiData.data.listDemoprojtables.items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
+    setDemoprojData(apiData.data.listDemoprojtables.items);
   }
 
-  const updateStatus = async (status) => {
-    try {
-      const input = {
-        id: '1',
-        sixty: status === 3,
-        status: status.toString()
-      };
-      await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
+  const SixtyTrue = async () => {
+    const input = {
+      id: '1',
+      sixty: true,
+      status: '3'
+    };
+    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
   }
 
-  useEffect(() => {
-    let interval;
-    if (isTimerRunning) {
-      interval = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-        setTime2(prevTime2 => prevTime2 + 1);
-      }, 1000);
-    } else if (finalTime2Count === null) {
-      setFinalTime2Count(time2);
-    }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, time2, finalTime2Count]);
-
-  useEffect(() => {
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const latestItem = demoprojData[demoprojData.length - 1];
-    if (latestItem?.time === 'start') {
-      setIsTimerRunning(true);
-      setFinalTime2Count(null);
-    } else if (latestItem?.time === 'stop') {
-      setIsTimerRunning(false);
-      setFinalTime2Count(time2);
-    }
-  }, [demoprojData, time2]);
-
-  useEffect(() => {
-    if (time >= 60) {
-      updateStatus(3); // Update status to 'red'
-    } else {
-      updateStatus(2); // Update status to 'yellow' or other default
-    }
-  }, [time]);
-
-  function getStatusColor(item) {
-    switch (item.status) {
-      case '1':
-        return 'green';
-      case '2':
-        return 'yellow';
-      case '3':
-        return 'red';
-      default:
-        return 'grey';
-    }
-  }
-
-  const formatDateTime = (date) => {
-    return date.toLocaleString('en-US', { hour12: true });
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);import React, { useState, useEffect } from "react";
-import "./App.css";
-import { API, graphqlOperation } from "aws-amplify";
-import { withAuthenticator } from "@aws-amplify/ui-react";
-import { listDemoprojtables } from './graphql/queries';
-import { updateDemoprojtable } from './graphql/mutations';
-
-const App = ({ signOut }) => {
-  const [demoprojData, setDemoprojData] = useState([]);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [time, setTime] = useState(0);
-  const [time2, setTime2] = useState(12.38);
-  const [finalTime2Count, setFinalTime2Count] = useState(null);
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
-
-  async function fetchData() {
-    try {
-      const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
-      setDemoprojData(apiData.data.listDemoprojtables.items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
-  const updateStatus = async (status) => {
-    try {
-      const input = {
-        id: '1',
-        sixty: status === 3,
-        status: status.toString()
-      };
-      await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
+  const SixtyFalse = async () => {
+    const input = {
+      id: '1',
+      sixty: false
+    };
+    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
   }
 
   useEffect(() => {
@@ -145,7 +49,9 @@ const App = ({ signOut }) => {
   }, [isTimerRunning, time2, finalTime2Count]);
 
   useEffect(() => {
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -162,19 +68,19 @@ const App = ({ signOut }) => {
 
   useEffect(() => {
     if (time >= 60) {
-      updateStatus(3); // Update status to 'red'
+      SixtyTrue();
     } else {
-      updateStatus(2); // Update status to 'yellow' or other default
+      SixtyFalse();
     }
   }, [time]);
 
   function getStatusColor(item) {
     switch (item.status) {
-      case '1':
+      case 1:
         return 'green';
-      case '2':
+      case 2:
         return 'yellow';
-      case '3':
+      case 3:
         return 'red';
       default:
         return 'grey';
