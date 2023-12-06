@@ -119,6 +119,7 @@ const App = ({ signOut }) => {
           <div className="grid-header">Escalation SMS</div>
           <div className="grid-header">Response Time</div>
           <div className="grid-header">Lane Losses</div>
+          {/* <div className="grid-header">Final Losses</div> */}
           {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
