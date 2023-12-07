@@ -12,6 +12,7 @@ const App = ({ signOut }) => {
   const [time2, setTime2] = useState(12.38);
   const [finalTime2Count, setFinalTime2Count] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [hasReachedSixty, setHasReachedSixty] = useState(false);
 
   async function fetchData() {
     try {
@@ -39,7 +40,13 @@ const App = ({ signOut }) => {
     let interval;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
+        setTime(prevTime => {
+          if (prevTime === 59) {
+            updateStatus(3); 
+            setHasReachedSixty(true);
+          }
+          return prevTime + 1;
+        });
         setTime2(prevTime2 => prevTime2 + 1);
       }, 1000);
     } else if (finalTime2Count === null) {
@@ -65,12 +72,11 @@ const App = ({ signOut }) => {
   }, [demoprojData, time2]);
 
   useEffect(() => {
-    if (time >= 59) {
-      updateStatus(3); 
-    } else {
+    if (time < 60 && hasReachedSixty) {
       updateStatus(2); 
+      setHasReachedSixty(false);
     }
-  }, [time]);
+  }, [time, hasReachedSixty]);
 
   function getStatusColor(item) {
     switch (item.status) {
@@ -95,6 +101,7 @@ const App = ({ signOut }) => {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
   return (
     <div className="App">
       <div className="sidebar">
@@ -124,7 +131,7 @@ const App = ({ signOut }) => {
               </div>
               <div className="grid-cell">{time}</div>
               <div className="grid-cell">{isTimerRunning ? 'true' : 'false'}</div>
-              <div className="grid-cell">{time >= 59 ? 'true' : 'false'}</div>
+              <div className="grid-cell">{time >= 60 ? 'true' : 'false'}</div>
               <div className="grid-cell">{time2}</div>
               <div className="grid-cell">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</div>
             </React.Fragment>
