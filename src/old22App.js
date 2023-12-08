@@ -133,7 +133,7 @@ const App = ({ signOut }) => {
           {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item.status), color: 'white' }}>
+              <div className="grid-cell" text color="white" style={{ backgroundColor: getStatusColor(item.status) }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{time}</div>
