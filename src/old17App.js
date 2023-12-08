@@ -81,7 +81,7 @@ const App = ({ signOut }) => {
       case '3':
         return 'red';
       default:
-        return 'green';
+        return 'grey';
     }
   }
 
@@ -119,7 +119,7 @@ const App = ({ signOut }) => {
           {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={{ backgroundColor: getStatusColor(Number(item.status)) }}>
+              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item) }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{time}</div>
