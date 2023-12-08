@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, Heading, Text, View, withAuthenticator } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
 import { updateDemoprojtable } from './graphql/mutations';
 
@@ -59,10 +59,10 @@ const App = ({ signOut }) => {
     const latestItem = demoprojData[demoprojData.length - 1];
     if(latestItem?.time === 'start') {
       setIsTimerRunning(true);
-      setFinalTime2Count(null);
+      setFinalTime2Count(null); // Reset finalTime2Count on restart
     } else if (latestItem?.time === 'stop') {
       setIsTimerRunning(false);
-      setFinalTime2Count(time2); 
+      setFinalTime2Count(time2); // Store the last time2 value
     }
   }, [demoprojData, time2]);
   // Effect for handling 60 seconds condition
@@ -121,7 +121,7 @@ const App = ({ signOut }) => {
           {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item.status) }}>
+              <div className="grid-cell" style={{ backgroundColor: getStatusColor(Number(item.status)) }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{time}</div>
