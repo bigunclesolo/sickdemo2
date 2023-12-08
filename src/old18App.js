@@ -22,12 +22,12 @@ const App = ({ signOut }) => {
     }
   }
 
-  const updateStatus = async (id, newStatus) => {
+  const updateStatus = async (status) => {
     try {
       const input = {
-        id: id.toString(),
-        status: newStatus.toString(),
-        // Add additional properties to update as necessary
+        id: '1',
+        sixty: status === 3,
+        status: status.toString()
       };
       await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
     } catch (error) {
@@ -36,20 +36,17 @@ const App = ({ signOut }) => {
   }
 
   useEffect(() => {
+    let interval;
     if (isTimerRunning) {
-      const interval = setInterval(() => {
-        setTime(prevTime => {
-          const updatedTime = prevTime + 1;
-          if (updatedTime === 60) {
-            // Update the status of the item to '3' when time reaches 60 seconds
-            updateStatus('1', 3); // Replace '1' with your actual item id
-          }
-          return updatedTime;
-        });
+      interval = setInterval(() => {
+        setTime(prevTime => prevTime + 1);
+        setTime2(prevTime2 => prevTime2 + 1);
       }, 1000);
-      return () => clearInterval(interval);
+    } else if (finalTime2Count === null) {
+      setFinalTime2Count(time2);
     }
-  }, [isTimerRunning]);
+    return () => clearInterval(interval);
+  }, [isTimerRunning, time2, finalTime2Count]);
 
   useEffect(() => {
     const interval = setInterval(fetchData, 5000);
@@ -61,23 +58,30 @@ const App = ({ signOut }) => {
     if (latestItem?.time === 'start') {
       setIsTimerRunning(true);
       setFinalTime2Count(null);
-      updateStatus(latestItem.id, 2); // Update status to '2' when timer starts
     } else if (latestItem?.time === 'stop') {
       setIsTimerRunning(false);
       setFinalTime2Count(time2);
     }
   }, [demoprojData, time2]);
 
-  function getStatusColor(status) {
-    switch (status) {
+  useEffect(() => {
+    if (time >= 59) {
+      updateStatus(3); 
+    } else {
+      updateStatus(2); 
+    }
+  }, [time]);
+
+  function getStatusColor(item) {
+    switch (item.status) {
       case '1':
-        return 'green'; // Default or initial status
+        return 'green';
       case '2':
-        return 'yellow'; // When the counter starts
+        return 'yellow';
       case '3':
-        return 'red'; // When timer1 reaches 60 seconds
+        return 'red';
       default:
-        return 'green'; // Default color if status is not 1, 2, or 3
+        return 'green';
     }
   }
 
