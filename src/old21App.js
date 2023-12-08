@@ -1,94 +1,96 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
 import { updateDemoprojtable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
-  const [demoprojData, setDemoprojData] = useState([]);
+  const [demoprojData, setDemoprojData] = useState([]); 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [time2, setTime2] = useState(12.38);
   const [finalTime2Count, setFinalTime2Count] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-
+  // Fetch data from the API
   async function fetchData() {
-    try {
-      const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
-      setDemoprojData(apiData.data.listDemoprojtables.items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    const apiData = await API.graphql({ query: listDemoprojtables });
+    setDemoprojData(apiData.data.listDemoprojtables.items);
   }
-
-  const updateStatus = async (status) => {
-    try {
-      const input = {
-        id: '1',
-        sixty: status === 3,
-        status: status.toString()
-      };
-      await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
+  // Function to handle 60 seconds condition
+  const SixtyTrue = async () => {
+    const input = {
+      id: '1',
+      sixty: true,
+      status: '3'
+    };
+    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
   }
-
+  const SixtyFalse = async () => {
+    const input = {
+      id: '1',
+      sixty: false
+    };
+    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
+  }
+  // Timer effect
   useEffect(() => {
     let interval;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-        setTime2(prevTime2 => prevTime2 + 1);
+        setTime(prev => prev + 1); 
+        setTime2(prev => prev + 1);
       }, 1000);
     } else if (finalTime2Count === null) {
       setFinalTime2Count(time2);
     }
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); 
   }, [isTimerRunning, time2, finalTime2Count]);
-
+  // Fetch data periodically
   useEffect(() => {
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(() => {
+      fetchData(); 
+    }, 5000);
     return () => clearInterval(interval);
-  }, []);
-
+  }, []) 
+  // Effect for checking the latest item in the data
   useEffect(() => {
     const latestItem = demoprojData[demoprojData.length - 1];
-    if (latestItem?.time === 'start') {
+    if(latestItem?.time === 'start') {
       setIsTimerRunning(true);
       setFinalTime2Count(null);
     } else if (latestItem?.time === 'stop') {
       setIsTimerRunning(false);
-      setFinalTime2Count(time2);
+      setFinalTime2Count(time2); 
     }
   }, [demoprojData, time2]);
-
+  // Effect for handling 60 seconds condition
   useEffect(() => {
-    if (time >= 59) {
-      updateStatus(3); 
+    if(time >= 60) {
+      SixtyTrue();
     } else {
-      updateStatus(2); 
+      SixtyFalse(); 
     }
   }, [time]);
-
+  // Function to determine the status color
   function getStatusColor(item) {
     switch (item.status) {
-      case '1':
+      case 1:
         return 'green';
-      case '2':
+      case 2:
         return 'yellow';
-      case '3':
+      case 3:
         return 'red';
       default:
         return 'green';
     }
   }
-
+  // Format date and time
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', { hour12: true });
   };
-
+  // Update the current date and time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -119,12 +121,12 @@ const App = ({ signOut }) => {
           {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={{ backgroundColor: getStatusColor(Number(item.status)) }}>
+              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item.status) }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{time}</div>
               <div className="grid-cell">{isTimerRunning ? 'true' : 'false'}</div>
-              <div className="grid-cell">{time >= 59 ? 'true' : 'false'}</div>
+              <div className="grid-cell">{time >= 60 ? 'true' : 'false'}</div>
               <div className="grid-cell">{time2}</div>
               <div className="grid-cell">{finalTime2Count !== null ? finalTime2Count : 'N/A'}</div>
             </React.Fragment>
