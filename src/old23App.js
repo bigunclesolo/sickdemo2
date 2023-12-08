@@ -9,23 +9,25 @@ import { updateDemoprojtable } from './graphql/mutations';
 const App = ({ signOut }) => {
   const [demoprojData, setDemoprojData] = useState([]);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [time, setTime] = useState(0);
-  const [lastTime, setLastTime] = useState(0);
-  const [laneLosses, setLaneLosses] = useState(12.38);
+  const [time, setTime] = useState(0); // Time for lane status
+  const [lastTime, setLastTime] = useState(0); // To store the last time value
+  const [laneLosses, setLaneLosses] = useState(12.38); // Starting from 12.38
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
+  // Fetch data from the API
   async function fetchData() {
-    const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
+    const apiData = await API.graphql({ query: listDemoprojtables });
     setDemoprojData(apiData.data.listDemoprojtables.items);
   }
 
+  // Function to handle 60 seconds condition
   const SixtyTrue = async () => {
     const input = {
       id: '1',
       sixty: true,
       status: '3'
     };
-    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
+    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
   }
 
   const SixtyFalse = async () => {
@@ -33,39 +35,44 @@ const App = ({ signOut }) => {
       id: '1',
       sixty: false
     };
-    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
+    return API.graphql(graphqlOperation(updateDemoprojtable, {input}));
   }
 
+  // Timer effect
   useEffect(() => {
     let interval;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
+        setTime(prev => prev + 1);
       }, 1000);
-    } else if (!isTimerRunning && time !== 0) {
-      setLaneLosses(prev => prev + time);
-      setLastTime(time);
-      setTime(0);
+    } else {
+      setLaneLosses(prev => prev + lastTime); // Update Lane Losses
+      setTime(0); // Reset time
+      setLastTime(0); // Reset last time
     }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, time]);
+    return () => clearInterval(interval); 
+  }, [isTimerRunning, time, lastTime]); // Including lastTime in dependency array
 
+  // Fetch data periodically
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData();
+      fetchData(); 
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
+  // Effect for checking the latest item in the data
   useEffect(() => {
     const latestItem = demoprojData[demoprojData.length - 1];
     if (latestItem?.time === 'start') {
       setIsTimerRunning(true);
     } else if (latestItem?.time === 'stop') {
       setIsTimerRunning(false);
+      setLastTime(time); // Set last time when timer stops
     }
-  }, [demoprojData]);
+  }, [demoprojData, time]);
 
+  // Effect for handling 60 seconds condition
   useEffect(() => {
     if (time >= 60) {
       SixtyTrue();
@@ -74,8 +81,9 @@ const App = ({ signOut }) => {
     }
   }, [time]);
 
-  function getStatusColor(status) {
-    switch (status) {
+  // Function to determine the status color
+  function getStatusColor(item) {
+    switch (item.status) {
       case 1:
         return 'green';
       case 2:
@@ -83,14 +91,16 @@ const App = ({ signOut }) => {
       case 3:
         return 'red';
       default:
-        return 'gray';
+        return 'green';
     }
   }
 
+  // Format date and time
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', { hour12: true });
   };
 
+  // Update the current date and time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -101,6 +111,7 @@ const App = ({ signOut }) => {
   return (
     <div className="App">
       <div className="sidebar">
+        {/* Sidebar content */}
         <div className="sidebar-item" style={{ fontWeight: 'bold', color: '#2e73b8' }}>Facility Statistics</div>
         <div className="sidebar-item active">Shipping Sorter</div>
         <div className="sidebar-item">Receiving Sorter</div>
@@ -112,22 +123,24 @@ const App = ({ signOut }) => {
         <h1>ACME Inc.</h1>
         <div>Distribution Center: San Bernardino, CA</div>
         <div className="grid-container">
+          {/* Grid Headers */}
           <div className="grid-header">Lane Description</div>
           <div className="grid-header">Lane Status</div>
           <div className="grid-header">Initial SMS</div>
           <div className="grid-header">Escalation SMS</div>
           <div className="grid-header">Response Time</div>
           <div className="grid-header">Lane Losses</div>
+          {/* Grid Rows */}
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
               <div className="grid-cell" style={{ backgroundColor: getStatusColor(item.status), color: 'white' }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
-              <div className="grid-cell" style={{ color: 'black' }}>{item.status ? time : 'N/A'}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{isTimerRunning ? 'Running' : 'Stopped'}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{time >= 60 ? 'Escalated' : 'Normal'}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{lastTime}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{laneLosses.toFixed(2)}</div>
+              <div className="grid-cell">{time}</div>
+              <div className="grid-cell">{isTimerRunning ? 'true' : 'false'}</div>
+              <div className="grid-cell">{time >= 60 ? 'true' : 'false'}</div>
+              <div className="grid-cell">{lastTime}</div>
+              <div className="grid-cell">{laneLosses}</div>
             </React.Fragment>
           ))}
         </div>
@@ -138,5 +151,5 @@ const App = ({ signOut }) => {
     </div>
   );
 };
-
-export default withAuthenticator(App);
+  
+  export default withAuthenticator(App);  
