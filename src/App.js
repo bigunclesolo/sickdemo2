@@ -124,8 +124,8 @@ const App = ({ signOut }) => {
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell" style={{ color: 'black' }}>{item.status ? time : 'N/A'}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{isTimerRunning ? 'Running' : 'Stopped'}</div>
-              <div className="grid-cell" style={{ color: 'black' }}>{time >= 60 ? 'Escalated' : 'Normal'}</div>
+              <div className="grid-cell" style={{ color: 'black' }}>{isTimerRunning ? 'Sent' : 'Not Sent'}</div>
+              <div className="grid-cell" style={{ color: 'black' }}>{time >= 60 ? 'Sent' : 'Not Sent'}</div>
               <div className="grid-cell" style={{ color: 'black' }}>{lastTime}</div>
               <div className="grid-cell" style={{ color: 'black' }}>{laneLosses.toFixed(2)}</div>
             </React.Fragment>
