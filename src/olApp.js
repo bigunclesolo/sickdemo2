@@ -77,15 +77,15 @@ const App = ({ signOut }) => {
   function getStatusColor(status) {
     switch (status) {
       case 1:
-        return { backgroundColor: 'green', color: 'white' };
+        return 'green';
       case 2:
-        return { backgroundColor: 'yellow', color: 'black' }; 
+        return 'yellow';
       case 3:
-        return { backgroundColor: 'red', color: 'black' }; 
+        return 'red';
       default:
-        return { backgroundColor: 'gray', color: 'white' };
+        return 'gray';
     }
-  }  
+  }
 
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', { hour12: true });
@@ -120,7 +120,7 @@ const App = ({ signOut }) => {
           <div className="grid-header">Lane Losses</div>
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={{backgroundColor: getStatusColor(item.status).backgroundColor, color: getStatusColor(item.status).color}}>
+              <div className="grid-cell" style={{ backgroundColor: getStatusColor(item.status), color: 'white' }}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell" style={{ color: 'black' }}>{item.status ? time : 'N/A'}</div>
