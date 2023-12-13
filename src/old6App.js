@@ -72,7 +72,7 @@ const App = ({ signOut }) => {
     } else {
       SixtyFalse();
     }
-  }, [demoprojData, time]);
+  }, [time]);
 
   function getStatusColor(status) {
     switch (status) {
