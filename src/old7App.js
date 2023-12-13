@@ -120,7 +120,7 @@ const App = ({ signOut }) => {
           <div className="grid-header">Lane Losses</div>
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={getStatusColor(item.status)}>
+              <div className="grid-cell" style={getStatusColor()}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{item.status ? time : 'N/A'}</div>
