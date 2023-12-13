@@ -54,22 +54,18 @@ const App = ({ signOut }) => {
     return () => clearInterval(timer);
   }, []);
 
-  function getStatusColor() {
-    if (!isTimerRunning) {
-      // If the timer is not running, it should always be green.
-      return { backgroundColor: 'green', color: 'white' };
-    } else {
-      // If the timer is running, determine the color based on iqValue.
-      switch (iqValue) {
-        case 2:
-          return { backgroundColor: 'yellow', color: 'black' };
-        case 3:
-          return { backgroundColor: 'red', color: 'white' };
-        default:
-          return { backgroundColor: 'gray', color: 'white' };
-      }
+  function getStatusColor(status) {
+    switch (status) {
+      case 1:
+        return { backgroundColor: 'green', color: 'white' };
+      case 2:
+        return { backgroundColor: 'yellow', color: 'black' };
+      case 3:
+        return { backgroundColor: 'red', color: 'white' };
+      default:
+        return { backgroundColor: 'gray', color: 'white' };
     }
-  }  
+  }
 
   const formatDateTime = (date) => {
     return date.toLocaleString('en-US', { hour12: true });
@@ -97,7 +93,7 @@ const App = ({ signOut }) => {
           <div className="grid-header">Lane Losses</div>
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={getStatusColor()}>
+              <div className="grid-cell" style={getStatusColor(item.status)}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{item.status ? time : 'N/A'}</div>
@@ -108,16 +104,14 @@ const App = ({ signOut }) => {
             </React.Fragment>
           ))}
           {/* Static dummy rows */}
-          {[...Array(9)].map((_, index) => (
+          {[...Array(6)].map((_, index) => (
             <React.Fragment key={`static-row-${index}`}>
-              <div className="grid-cell" style={{ backgroundColor: 'green', color: 'white' }}>
-                Take-away #{index + 2} Pallet Build
-              </div>
-              <div className="grid-cell">0</div>
+              <div className="grid-cell">Static Lane #{index + 1}</div>
+              <div className="grid-cell">-</div>
               <div className="grid-cell">Not Sent</div>
               <div className="grid-cell">Not Sent</div>
               <div className="grid-cell">0</div>
-              <div className="grid-cell">12.38</div>
+              <div className="grid-cell">0.00</div>
             </React.Fragment>
           ))}
         </div>
