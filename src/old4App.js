@@ -4,7 +4,6 @@ import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listDemoprojtables } from './graphql/queries';
-import { updateDemoprojtable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
   const [demoprojData, setDemoprojData] = useState([]);
@@ -13,42 +12,12 @@ const App = ({ signOut }) => {
   const [lastTime, setLastTime] = useState(0);
   const [laneLosses, setLaneLosses] = useState(12.38);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [iqValue, setIqValue] = useState(1); // 1: green, 2: yellow, 3: red
 
   async function fetchData() {
     const apiData = await API.graphql(graphqlOperation(listDemoprojtables));
     setDemoprojData(apiData.data.listDemoprojtables.items);
   }
-
-  const SixtyTrue = async () => {
-    const input = {
-      id: '1',
-      sixty: true,
-      status: '3'
-    };
-    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
-  }
-
-  const SixtyFalse = async () => {
-    const input = {
-      id: '1',
-      sixty: false
-    };
-    await API.graphql(graphqlOperation(updateDemoprojtable, { input }));
-  }
-
-  useEffect(() => {
-    let interval;
-    if (isTimerRunning) {
-      interval = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-      }, 1000);
-    } else if (!isTimerRunning && time !== 0) {
-      setLaneLosses(prev => prev + time);
-      setLastTime(time);
-      setTime(0);
-    }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, time]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,38 +27,25 @@ const App = ({ signOut }) => {
   }, []);
 
   useEffect(() => {
-    const latestItem = demoprojData[demoprojData.length - 1];
-    if (latestItem?.time === 'start') {
-      setIsTimerRunning(true);
-    } else if (latestItem?.time === 'stop') {
-      setIsTimerRunning(false);
-    }
-  }, [demoprojData]);
-
-  useEffect(() => {
-    if (time >= 60) {
-      SixtyTrue();
+    let interval;
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setTime(prevTime => {
+          let updatedTime = prevTime + 1;
+          if (updatedTime >= 60) {
+            setIqValue(3); // Red for 60 seconds or more
+          } else {
+            setIqValue(2); // Yellow if timer is running but less than 60 seconds
+          }
+          return updatedTime;
+        });
+      }, 1000);
     } else {
-      SixtyFalse();
+      setIqValue(1); // Green when timer is not running
+      setTime(0);
     }
-  }, [time]);
-
-  function getStatusColor(status) {
-    switch (status) {
-      case 1:
-        return { backgroundColor: 'green', color: 'white' };
-      case 2:
-        return { backgroundColor: 'yellow', color: 'black' }; 
-      case 3:
-        return { backgroundColor: 'red', color: 'black' }; 
-      default:
-        return { backgroundColor: 'gray', color: 'white' };
-    }
-  }  
-
-  const formatDateTime = (date) => {
-    return date.toLocaleString('en-US', { hour12: true });
-  };
+    return () => clearInterval(interval);
+  }, [isTimerRunning, time]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -97,6 +53,27 @@ const App = ({ signOut }) => {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  function getStatusColor() {
+    if (!isTimerRunning) {
+      // If the timer is not running, it should always be green.
+      return { backgroundColor: 'green', color: 'white' };
+    } else {
+      // If the timer is running, determine the color based on iqValue.
+      switch (iqValue) {
+        case 2:
+          return { backgroundColor: 'yellow', color: 'black' };
+        case 3:
+          return { backgroundColor: 'red', color: 'white' };
+        default:
+          return { backgroundColor: 'gray', color: 'white' };
+      }
+    }
+  }  
+
+  const formatDateTime = (date) => {
+    return date.toLocaleString('en-US', { hour12: true });
+  };
 
   return (
     <div className="App">
@@ -120,12 +97,12 @@ const App = ({ signOut }) => {
           <div className="grid-header">Lane Losses</div>
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
-              <div className="grid-cell" style={getStatusColor(item.status)}>
+              <div className="grid-cell" style={getStatusColor()}>
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{item.status ? time : 'N/A'}</div>
               <div className="grid-cell">{isTimerRunning ? 'Sent' : 'Not Sent'}</div>
-              <div className="grid-cell">{time === 60 ? 'Sent' : 'Not Sent'}</div>
+              <div className="grid-cell">{time >= 60 ? 'Sent' : 'Not Sent'}</div>
               <div className="grid-cell">{lastTime}</div>
               <div className="grid-cell">{laneLosses.toFixed(2)}</div>
             </React.Fragment>
