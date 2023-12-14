@@ -11,7 +11,7 @@ const App = ({ signOut }) => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [lastTime, setLastTime] = useState(0);
-  const [laneLosses, setLaneLosses] = useState(12);
+  const [laneLosses, setLaneLosses] = useState(12.38);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   async function fetchData() {
@@ -140,7 +140,7 @@ const App = ({ signOut }) => {
               <div className="grid-cell">Not Sent</div>
               <div className="grid-cell">Not Sent</div>
               <div className="grid-cell">0</div>
-              <div className="grid-cell">12</div>
+              <div className="grid-cell">12.38</div>
             </React.Fragment>
           ))}
         </div>
