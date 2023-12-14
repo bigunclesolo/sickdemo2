@@ -124,8 +124,8 @@ const App = ({ signOut }) => {
                 {`Take-away #${item.id} Pallet Build`}
               </div>
               <div className="grid-cell">{item.status ? time : 'N/A'}</div>
-              <div className="grid-cell">{isTimerRunning ? 'Sent' : '-'}</div>
-              <div className="grid-cell">{time >= 60 ? 'Sent' : '-'}</div>
+              <div className="grid-cell">{isTimerRunning ? 'Sent' : ''}</div>
+              <div className="grid-cell">{time >= 60 ? 'Sent' : ''}</div>
               <div className="grid-cell">{lastTime}</div>
               <div className="grid-cell">{laneLosses.toFixed(2)}</div>
             </React.Fragment>
@@ -137,10 +137,10 @@ const App = ({ signOut }) => {
                 Take-away #{index + 2} Pallet Build
               </div>
               <div className="grid-cell">0</div>
-              <div className="grid-cell">-</div>
-              <div className="grid-cell">-</div>
+              <div className="grid-cell"></div>
+              <div className="grid-cell"></div>
               <div className="grid-cell">0</div>
-              <div className="grid-cell">12.00</div>
+              <div className="grid-cell">12</div>
             </React.Fragment>
           ))}
         </div>
