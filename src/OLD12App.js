@@ -116,8 +116,8 @@ const App = ({ signOut }) => {
           <div className="grid-header">Lane Status</div>
           <div className="grid-header">Initial SMS</div>
           <div className="grid-header">Escalation SMS</div>
-          <div className="grid-header">Response Time (Sec)</div>
-          <div className="grid-header">Lane Losses (Sec)</div>
+          <div className="grid-header">Response Time</div>
+          <div className="grid-header">Lane Losses</div>
           {demoprojData.map((item, index) => (
             <React.Fragment key={index}>
               <div className="grid-cell" style={getStatusColor(item.status)}>
