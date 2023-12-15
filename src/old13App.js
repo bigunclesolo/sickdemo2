@@ -98,18 +98,6 @@ const App = ({ signOut }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const lanesData = [
-    { id: 2, laneStatus: '0', initialSms: '-', escalationSms: '-', responseTime: '89', laneLosses: '101.00' },
-    { id: 3, laneStatus: '0', initialSms: 'Sent', escalationSms: '-', responseTime: '17', laneLosses: '29.00' },
-    { id: 4, laneStatus: '0', initialSms: '-', escalationSms: '-', responseTime: '32', laneLosses: '44.00' },
-    { id: 5, laneStatus: '0', initialSms: 'Sent', escalationSms: 'Sent', responseTime: '313', laneLosses: '325.00' },
-    { id: 6, laneStatus: '0', initialSms: '-', escalationSms: '-', responseTime: '58', laneLosses: '70.00' },
-    { id: 7, laneStatus: '0', initialSms: '-', escalationSms: 'Sent', responseTime: '412', laneLosses: '424.00' },
-    { id: 8, laneStatus: '0', initialSms: 'Sent', escalationSms: '-', responseTime: '19', laneLosses: '31.00' },
-    { id: 9, laneStatus: '0', initialSms: '-', escalationSms: '-', responseTime: '101', laneLosses: '113.00' },
-    { id: 10, laneStatus: '0', initialSms: '-', escalationSms: '-', responseTime: '57', laneLosses: '69.00' },
-  ];
-
   return (
     <div className="App">
       <div className="sidebar">
@@ -142,17 +130,17 @@ const App = ({ signOut }) => {
               <div className="grid-cell">{laneLosses.toFixed(2)}</div>
             </React.Fragment>
           ))}
-          {/* Static data rows */}
-          {lanesData.map((lane) => (
-            <React.Fragment key={lane.id}>
+          {/* Static dummy rows */}
+          {[...Array(9)].map((_, index) => (
+            <React.Fragment key={`static-row-${index}`}>
               <div className="grid-cell" style={{ backgroundColor: 'green', color: 'white' }}>
-                Take-away #{lane.id} Pallet Build
+                Take-away #{index + 2} Pallet Build
               </div>
-              <div className="grid-cell">{lane.laneStatus}</div>
-              <div className="grid-cell">{lane.initialSms}</div>
-              <div className="grid-cell">{lane.escalationSms}</div>
-              <div className="grid-cell">{lane.responseTime}</div>
-              <div className="grid-cell">{lane.laneLosses}</div>
+              <div className="grid-cell">0</div>
+              <div className="grid-cell">-</div>
+              <div className="grid-cell">-</div>
+              <div className="grid-cell">0</div>
+              <div className="grid-cell">12.00</div>
             </React.Fragment>
           ))}
         </div>
