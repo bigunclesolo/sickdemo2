@@ -1,12 +1,12 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createDemoprojtable = /* GraphQL */ `
-  mutation CreateDemoprojtable(
-    $input: CreateDemoprojtableInput!
-    $condition: ModelDemoprojtableConditionInput
+export const createsickdemotable = /* GraphQL */ `
+  mutation Createsickdemotable(
+    $input: CreatesickdemotableInput!
+    $condition: ModelsickdemotableConditionInput
   ) {
-    createDemoprojtable(input: $input, condition: $condition) {
+    createsickdemotable(input: $input, condition: $condition) {
       id
       running
       status
@@ -20,12 +20,12 @@ export const createDemoprojtable = /* GraphQL */ `
     }
   }
 `;
-export const updateDemoprojtable = /* GraphQL */ `
-  mutation UpdateDemoprojtable(
-    $input: UpdateDemoprojtableInput!
-    $condition: ModelDemoprojtableConditionInput
+export const updatesickdemotable = /* GraphQL */ `
+  mutation Updatesickdemotable(
+    $input: UpdatesickdemotableInput!
+    $condition: ModelsickdemotableConditionInput
   ) {
-    updateDemoprojtable(input: $input, condition: $condition) {
+    updatesickdemotable(input: $input, condition: $condition) {
       id
       running
       status
@@ -39,12 +39,12 @@ export const updateDemoprojtable = /* GraphQL */ `
     }
   }
 `;
-export const deleteDemoprojtable = /* GraphQL */ `
-  mutation DeleteDemoprojtable(
-    $input: DeleteDemoprojtableInput!
-    $condition: ModelDemoprojtableConditionInput
+export const deletesickdemotable = /* GraphQL */ `
+  mutation Deletesickdemotable(
+    $input: DeletesickdemotableInput!
+    $condition: ModelsickdemotableConditionInput
   ) {
-    deleteDemoprojtable(input: $input, condition: $condition) {
+    deletesickdemotable(input: $input, condition: $condition) {
       id
       running
       status
