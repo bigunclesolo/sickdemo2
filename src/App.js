@@ -3,7 +3,7 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import {listsickdemotables, listsickdemotables} from './graphql/queries';
+import {listsickdemotables} from './graphql/queries';
 import { updatesickdemotable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
