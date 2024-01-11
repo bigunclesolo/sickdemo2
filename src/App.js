@@ -3,7 +3,7 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import { listsickdemotable } from './graphql/queries';
+import {listsickdemotables, listsickdemotables} from './graphql/queries';
 import { updatesickdemotable } from './graphql/mutations';
 
 const App = ({ signOut }) => {
@@ -15,8 +15,8 @@ const App = ({ signOut }) => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   async function fetchData() {
-    const apiData = await API.graphql(graphqlOperation(listsickdemotable));
-    setsickdemoData(apiData.data.listsickdemotable.items);
+    const apiData = await API.graphql(graphqlOperation(listsickdemotables));
+    setsickdemoData(apiData.data.listsickdemotables.items);
   }
 
   const SixtyTrue = async () => {
